@@ -98,8 +98,8 @@ export default function CaptchaSearch({ onVerified }: CaptchaSearchProps) {
         </div>
       </form>
 
-      {/* Google AI Search Widget - Only in production */}
-      {process.env.NODE_ENV === 'production' && (
+      {/* Google AI Search Widget - Only in production and when enabled */}
+      {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_AI_SEARCH === 'true' && (
         <gen-search-widget
           configId={process.env.NEXT_PUBLIC_GOOGLE_AI_CONFIG_ID || "6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"}
           triggerId="searchWidgetTrigger">
@@ -110,6 +110,13 @@ export default function CaptchaSearch({ onVerified }: CaptchaSearchProps) {
       {process.env.NODE_ENV === 'development' && (
         <div className="dev-notice">
           <p>🔧 <strong>Development Mode:</strong> Menggunakan pencarian lokal. Tekan Enter untuk mencari di FAQ.</p>
+        </div>
+      )}
+      
+      {/* Production mode notice when AI Search is disabled */}
+      {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_AI_SEARCH !== 'true' && (
+        <div className="dev-notice">
+          <p>🔧 <strong>Production Mode:</strong> Menggunakan pencarian lokal. Tekan Enter untuk mencari di FAQ.</p>
         </div>
       )}
       

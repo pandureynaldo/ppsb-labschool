@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import CaptchaSearch from "../components/CaptchaSearch";
+import SearchWidget from "../components/SearchWidget";
 import { useState } from "react";
 
 export default function Home() {
@@ -107,7 +107,7 @@ export default function Home() {
       <section className="search-section">
         <div className="container">
           <div className="search-container">
-            <CaptchaSearch onVerified={() => {}} />
+            <SearchWidget />
           </div>
         </div>
       </section>

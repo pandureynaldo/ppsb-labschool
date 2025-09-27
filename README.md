@@ -6,7 +6,6 @@ Website FAQ untuk Penerimaan Siswa Baru SMP Labschool Jakarta yang dibangun deng
 
 - 🎨 Design yang sesuai dengan website resmi SMP Labschool Jakarta
 - 🔍 Integrasi Google AI Search Widget untuk pencarian cerdas
-- 🛡️ reCAPTCHA v2 untuk melindungi dari pencarian robot
 - 📱 Responsive design untuk semua perangkat
 - ⚡ Fast loading dengan Next.js 14
 - 🎯 FAQ lengkap seputar penerimaan siswa baru
@@ -17,7 +16,6 @@ Website FAQ untuk Penerimaan Siswa Baru SMP Labschool Jakarta yang dibangun deng
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Styling
 - **Google AI Search Widget** - Pencarian cerdas
-- **reCAPTCHA v2** - Perlindungan dari robot
 
 ## Cara Menjalankan
 
@@ -33,18 +31,18 @@ yarn dev
 
 3. Buka [http://localhost:3000](http://localhost:3000) di browser
 
-## Konfigurasi reCAPTCHA
+## Konfigurasi Google AI Search Widget
 
-✅ **reCAPTCHA sudah dikonfigurasi!**
+✅ **Google AI Search Widget sudah dikonfigurasi!**
 
-Site key dan secret key sudah diset di `env.example`. Untuk menggunakan:
+Widget akan otomatis aktif dengan config ID yang sudah diset. Untuk menggunakan:
 
 1. Copy file `env.example` menjadi `.env.local`:
 ```bash
 cp env.example .env.local
 ```
 
-2. reCAPTCHA akan otomatis aktif dengan site key yang sudah dikonfigurasi
+2. Widget akan otomatis aktif dengan config ID yang sudah dikonfigurasi
 
 ## Build untuk Production
 

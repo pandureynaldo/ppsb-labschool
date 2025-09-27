@@ -10,6 +10,8 @@ declare global {
       'gen-search-widget': {
         configId: string;
         triggerId: string;
+        className?: string;
+        style?: React.CSSProperties;
       };
     }
   }
@@ -23,23 +25,21 @@ export default function CaptchaSearch({ onVerified }: CaptchaSearchProps) {
   const [searchValue, setSearchValue] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Load Google AI search widget script only in production
+  // Load Google AI search widget script
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production') {
-      const script = document.createElement("script");
-      script.src = "https://cloud.google.com/ai/gen-app-builder/client?hl=en_US";
-      script.async = true;
-      document.head.appendChild(script);
+    const script = document.createElement("script");
+    script.src = "https://cloud.google.com/ai/gen-app-builder/client?hl=en_US";
+    script.async = true;
+    document.head.appendChild(script);
 
-      return () => {
-        const existingScript = document.querySelector(
-          'script[src*="gen-app-builder"]'
-        );
-        if (existingScript) {
-          document.head.removeChild(existingScript);
-        }
-      };
-    }
+    return () => {
+      const existingScript = document.querySelector(
+        'script[src*="gen-app-builder"]'
+      );
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,13 +98,12 @@ export default function CaptchaSearch({ onVerified }: CaptchaSearchProps) {
         </div>
       </form>
 
-      {/* Google AI Search Widget - Only in production and when enabled */}
-      {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_AI_SEARCH === 'true' && (
-        <gen-search-widget
-          configId={process.env.NEXT_PUBLIC_GOOGLE_AI_CONFIG_ID || "6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"}
-          triggerId="searchWidgetTrigger">
-        </gen-search-widget>
-      )}
+      {/* Google AI Search Widget - Always render, visibility controlled by CSS and environment */}
+      <gen-search-widget
+        configId={process.env.NEXT_PUBLIC_GOOGLE_AI_CONFIG_ID || "6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"}
+        triggerId="searchWidgetTrigger"
+        className={process.env.NEXT_PUBLIC_ENABLE_AI_SEARCH === 'true' ? 'ai-search-enabled' : 'ai-search-disabled'}>
+      </gen-search-widget>
       
       {/* Development mode notice */}
       {process.env.NODE_ENV === 'development' && (

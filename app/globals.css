@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Google AI Search Widget - Hidden by default as per documentation */
+gen-search-widget {
+  display: none !important;
+}
+
+/* Show widget when enabled */
+gen-search-widget.ai-search-enabled {
+  display: block !important;
+}
+
+/* Keep hidden when disabled */
+gen-search-widget.ai-search-disabled {
+  display: none !important;
+}
+
 :root {
   --primary-blue: #1e40af;
   --secondary-blue: #3b82f6;

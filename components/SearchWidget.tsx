@@ -7,7 +7,7 @@ import Image from "next/image";
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'gen-search-widget': {
+      "gen-search-widget": {
         configId: string;
         triggerId: string;
         className?: string;
@@ -75,20 +75,25 @@ export default function SearchWidget({ onSearch }: SearchWidgetProps) {
       </form>
 
       {/* Google AI Search Widget - Always visible */}
-      <gen-search-widget
-        configId="6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"
-        triggerId="searchWidgetTrigger">
-      </gen-search-widget>
-      
+      <div
+        style={{ padding: "4rem 0 0 0" }}  
+      >
+        <gen-search-widget
+          configId="6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"
+          triggerId="searchWidgetTrigger"
+          style={{ margin: "4rem 0 0 0" }}
+        ></gen-search-widget>
+      </div>
+
       {/* Powered by Gemini AI */}
       <div className="powered-by">
         <p>
-          Powered by 
+          Powered by
           <span className="gemini-logo">
-            <Image 
-              src="/gemini-icon.png" 
-              alt="Gemini AI" 
-              width={20} 
+            <Image
+              src="/gemini-icon.png"
+              alt="Gemini AI"
+              width={20}
               height={20}
               className="gemini-icon-img"
               priority={false}

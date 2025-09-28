@@ -200,14 +200,15 @@ export default function Home() {
       </section>
 
       {/* Separator */}
+      
+     
+      {/* FAQ Section */}
+      <section id="faq" className="faq-section">
       <div className="separator">
         <div className="separator-line"></div>
         <div className="separator-text">Pertanyaan yang Sering Diajukan</div>
         <div className="separator-line"></div>
       </div>
-
-      {/* FAQ Section */}
-      <section id="faq" className="faq-section">
         <div className="container">
           <div className="faq-accordion">
             {faqData.map((faq, index) => (

@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import SearchWidget from "../components/SearchWidget";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const faqData = [
     {
@@ -64,19 +66,86 @@ export default function Home() {
     setOpenAccordion(openAccordion === index ? null : index);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Close mobile menu when clicking outside or on escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isMobileMenuOpen && !target.closest('.mobile-nav') && !target.closest('.mobile-menu-toggle')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
+  // Handle scroll effect for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="header">
+      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container">
           <div className="header-content">
-            <a href="/" className="logo">
-              <div className="" style={{ marginTop: "10px" }}>
-                <Image src="/logo-smp-labschool.png" alt="SMP Labschool Jakarta" width={40} height={40} /> 
+            <a href="https://smplabschooljakarta.sch.id/" className="logo">
+              <div className="logo-icon">
+                <Image 
+                  src="/logo-smp-labschool.png" 
+                  alt="SMP Labschool Jakarta" 
+                  width={80} 
+                  height={80}
+                  priority
+                  className="logo-image"
+                /> 
               </div>
               <span className="logo-text">SMP Labschool Jakarta</span>
             </a>
-            <nav>
+            
+            {/* Mobile Menu Button */}
+            <button 
+              className="mobile-menu-toggle"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle mobile menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+              <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+              <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+            </button>
+
+            {/* Desktop Navigation */}
+            <nav className="desktop-nav">
               <ul className="nav">
                 <li>
                   <a href="#beranda">Beranda</a>
@@ -89,6 +158,24 @@ export default function Home() {
                 </li>
                 <li>
                   <a href="#kontak">Kontak</a>
+                </li>
+              </ul>
+            </nav>
+
+            {/* Mobile Navigation */}
+            <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+              <ul className="mobile-nav-list">
+                <li>
+                  <a href="#beranda" onClick={() => setIsMobileMenuOpen(false)}>Beranda</a>
+                </li>
+                <li>
+                  <a href="https://smplabschooljakarta.sch.id/tentang" onClick={() => setIsMobileMenuOpen(false)}>Tentang</a>
+                </li>
+                <li>
+                  <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
+                </li>
+                <li>
+                  <a href="#kontak" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
                 </li>
               </ul>
             </nav>

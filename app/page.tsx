@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import SearchWidget from "../components/SearchWidget";
 import { useState, useEffect } from "react";
+import DarkModeToggle from "../components/DarkModeToggle";
 
 export default function Home() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
@@ -70,34 +70,55 @@ export default function Home() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleSearchClick = () => {
+    // Focus the hidden input to trigger the widget
+    const hiddenInput = document.getElementById('mainSearchInput') as HTMLInputElement;
+    if (hiddenInput) {
+      hiddenInput.focus();
+      hiddenInput.click();
+      
+      // Also try to trigger the widget directly
+      setTimeout(() => {
+        const widget = document.querySelector('gen-search-widget') as any;
+        if (widget && typeof widget.open === 'function') {
+          widget.open();
+        }
+      }, 100);
+    }
+  };
+
   // Close mobile menu when clicking outside or on escape key
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (isMobileMenuOpen && !target.closest('.mobile-nav') && !target.closest('.mobile-menu-toggle')) {
+      if (
+        isMobileMenuOpen &&
+        !target.closest(".mobile-nav") &&
+        !target.closest(".mobile-menu-toggle")
+      ) {
         setIsMobileMenuOpen(false);
       }
     };
 
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isMobileMenuOpen) {
+      if (event.key === "Escape" && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
       }
     };
 
     if (isMobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscapeKey);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
       // Prevent body scroll when menu is open
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+      document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
 
@@ -108,40 +129,64 @@ export default function Home() {
       setIsScrolled(scrollTop > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Load Google AI search widget script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://cloud.google.com/ai/gen-app-builder/client?hl=en_US";
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.querySelector(
+        'script[src*="gen-app-builder"]'
+      );
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []);
+
 
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+      <header className={`header ${isScrolled ? "scrolled" : ""}`}>
         <div className="container">
           <div className="header-content">
             <a href="https://smplabschooljakarta.sch.id/" className="logo">
               <div className="logo-icon">
-                <Image 
-                  src="/logo-smp-labschool.png" 
-                  alt="SMP Labschool Jakarta" 
-                  width={80} 
-                  height={80}
+                <Image
+                  src="/logo-smp-labschool.png"
+                  alt="SMP Labschool Jakarta"
+                  width={50}
+                  height={50}
                   priority
                   className="logo-image"
-                /> 
+                />
               </div>
               <span className="logo-text">SMP Labschool Jakarta</span>
             </a>
-            
+
             {/* Mobile Menu Button */}
-            <button 
+            <button
               className="mobile-menu-toggle"
               onClick={toggleMobileMenu}
               aria-label="Toggle mobile menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
-              <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
-              <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+              <span
+                className={`hamburger-line ${isMobileMenuOpen ? "open" : ""}`}
+              ></span>
+              <span
+                className={`hamburger-line ${isMobileMenuOpen ? "open" : ""}`}
+              ></span>
+              <span
+                className={`hamburger-line ${isMobileMenuOpen ? "open" : ""}`}
+              ></span>
             </button>
 
             {/* Desktop Navigation */}
@@ -151,7 +196,9 @@ export default function Home() {
                   <a href="#beranda">Beranda</a>
                 </li>
                 <li>
-                  <a href="https://smplabschooljakarta.sch.id/tentang">Tentang</a>
+                  <a href="https://smplabschooljakarta.sch.id/tentang">
+                    Tentang
+                  </a>
                 </li>
                 <li>
                   <a href="#faq">FAQ</a>
@@ -159,23 +206,40 @@ export default function Home() {
                 <li>
                   <a href="#kontak">Kontak</a>
                 </li>
+                <li>
+                  <DarkModeToggle />
+                </li>
               </ul>
             </nav>
 
             {/* Mobile Navigation */}
-            <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+            <nav className={`mobile-nav ${isMobileMenuOpen ? "open" : ""}`}>
               <ul className="mobile-nav-list">
                 <li>
-                  <a href="#beranda" onClick={() => setIsMobileMenuOpen(false)}>Beranda</a>
+                  <a href="#beranda" onClick={() => setIsMobileMenuOpen(false)}>
+                    Beranda
+                  </a>
                 </li>
                 <li>
-                  <a href="https://smplabschooljakarta.sch.id/tentang" onClick={() => setIsMobileMenuOpen(false)}>Tentang</a>
+                  <a
+                    href="https://smplabschooljakarta.sch.id/tentang"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Tentang
+                  </a>
                 </li>
                 <li>
-                  <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
+                  <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>
+                    FAQ
+                  </a>
                 </li>
                 <li>
-                  <a href="#kontak" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
+                  <a href="#kontak" onClick={() => setIsMobileMenuOpen(false)}>
+                    Kontak
+                  </a>
+                </li>
+                <li className="mobile-nav-toggle">
+                  <DarkModeToggle />
                 </li>
               </ul>
             </nav>
@@ -186,7 +250,7 @@ export default function Home() {
       {/* Title Section */}
       <section className="title-section">
         <div className="container">
-          <h1 className="main-title">FAQ PPSB SMP Labschool Jakarta</h1>
+          <h2 className="main-title">FAQ PPSB SMP Labschool Jakarta</h2>
         </div>
       </section>
 
@@ -194,21 +258,78 @@ export default function Home() {
       <section className="search-section">
         <div className="container">
           <div className="search-container">
-            <SearchWidget />
+            <h2 className="search-title">Cari Pertanyaan Anda</h2>
+            <p className="search-subtitle">
+              Klik input di bawah untuk membuka pencarian cerdas
+            </p>
+            <div className="search-input-wrapper">
+              <input
+                type="text"
+                placeholder="Klik untuk mencari pertanyaan..."
+                className="search-input-main"
+                onClick={handleSearchClick}
+                readOnly
+              />
+              <div className="search-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Powered by Gemini AI */}
+            <div className="powered-by" style={{ marginTop: "1rem" }}>
+              <p>
+                Powered by
+                <span className="gemini-logo">
+                  <Image
+                    src="/gemini-icon.png"
+                    alt="Gemini AI"
+                    width={20}
+                    height={20}
+                    className="gemini-icon-img"
+                    priority={false}
+                  />
+                </span>
+                <strong>Gemini AI</strong>
+                <gen-search-widget
+                  configId="6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"
+                  triggerId="mainSearchInput"
+                ></gen-search-widget>
+              </p>
+            </div>
+
+            {/* Hidden input for widget trigger */}
+            <input
+              type="text"
+              id="mainSearchInput"
+              style={{ position: "absolute", left: "-9999px", opacity: 0 }}
+            />
           </div>
         </div>
       </section>
 
       {/* Separator */}
-      
-     
+
       {/* FAQ Section */}
       <section id="faq" className="faq-section">
-      <div className="separator">
-        <div className="separator-line"></div>
-        <div className="separator-text">Pertanyaan yang Sering Diajukan</div>
-        <div className="separator-line"></div>
-      </div>
+        <div className="separator">
+          <div className="separator-line"></div>
+          <div className="separator-text">Pertanyaan yang Sering Diajukan</div>
+          <div className="separator-line"></div>
+        </div>
         <div className="container">
           <div className="faq-accordion">
             {faqData.map((faq, index) => (
@@ -221,21 +342,40 @@ export default function Home() {
                   id={`faq-header-${index}`}
                 >
                   <span className="faq-accordion-question">{faq.question}</span>
-                  <span className={`faq-accordion-icon ${openAccordion === index ? 'open' : ''}`} aria-hidden="true">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <span
+                    className={`faq-accordion-icon ${
+                      openAccordion === index ? "open" : ""
+                    }`}
+                    aria-hidden="true"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6 9L12 15L18 9"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </span>
                 </button>
-                <div 
-                  className={`faq-accordion-content ${openAccordion === index ? 'open' : ''}`}
+                <div
+                  className={`faq-accordion-content ${
+                    openAccordion === index ? "open" : ""
+                  }`}
                   id={`faq-content-${index}`}
                   role="region"
                   aria-labelledby={`faq-header-${index}`}
                   aria-hidden={openAccordion !== index}
                 >
                   <div className="faq-accordion-answer">
-                    {faq.answer.split('\n').map((line, lineIndex) => (
+                    {faq.answer.split("\n").map((line, lineIndex) => (
                       <div key={lineIndex} className="faq-answer-line">
                         {line}
                       </div>
@@ -278,6 +418,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

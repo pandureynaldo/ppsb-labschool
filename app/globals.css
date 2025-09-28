@@ -282,15 +282,22 @@ body {
 
 /* ===== SEARCH SECTION ===== */
 .search-section {
-  padding: 2rem 0 4rem;
+  padding: 2rem 0;
   background: var(--white);
   position: relative;
   z-index: 1;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .search-container {
   max-width: 600px;
   margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .search-title {
@@ -494,7 +501,7 @@ body {
 
 /* ===== FAQ SECTION ===== */
 .faq-section {
-  padding: 4rem 0;
+  padding: 2rem 0 4rem;
   background: var(--bg-light);
   position: relative;
   z-index: 1;
@@ -832,8 +839,11 @@ body {
 }
 
 .search-widget-container {
-  margin: 2rem 0;
+  margin: 2rem 0 0 0;
   min-height: 200px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .search-widget-placeholder {
@@ -845,6 +855,36 @@ body {
   position: relative;
   max-width: 500px;
   margin: 0 auto;
+}
+
+/* Widget search container - remove duplicate */
+
+/* When widget has results, expand the container */
+.search-widget-container[data-active="true"] {
+  min-height: 400px;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  flex: 1;
+}
+
+/* Remove dynamic spacing - let flexbox handle it naturally */
+
+/* Ensure widget content doesn't overflow */
+.search-widget-container gen-search-widget {
+  display: flex;
+  width: 100%;
+  min-height: 200px;
+  flex: 1;
+}
+
+/* Style for when widget is loading or has content */
+.search-widget-container[data-active="true"] gen-search-widget {
+  min-height: 400px;
+  background: rgba(248, 250, 252, 0.5);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  flex: 1;
 }
 
 .search-input-main {
@@ -1070,6 +1110,11 @@ body {
 
 .dark .search-input-main:focus {
   border-color: #3b82f6;
+}
+
+.dark .search-widget-container[data-active="true"] gen-search-widget {
+  background: rgba(17, 24, 39, 0.5);
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .dark .separator-text {

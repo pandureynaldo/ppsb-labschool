@@ -150,6 +150,65 @@ export default function Home() {
     };
   }, []);
 
+  // Monitor search widget for results and update data-active attribute
+  useEffect(() => {
+    const searchWidgetContainer = document.getElementById('searchWidgetContainer');
+    
+    if (!searchWidgetContainer) return;
+
+    // Create a MutationObserver to watch for changes in the widget
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' || mutation.type === 'attributes') {
+          // Check if widget has results
+          const hasResults = searchWidgetContainer.querySelector('[data-testid="search-results"], .search-results, [class*="result"]');
+          const isActive = searchWidgetContainer.children.length > 0;
+          
+          if (hasResults || isActive) {
+            searchWidgetContainer.setAttribute('data-active', 'true');
+          } else {
+            searchWidgetContainer.setAttribute('data-active', 'false');
+          }
+        }
+      });
+    });
+
+    // Start observing
+    observer.observe(searchWidgetContainer, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'data-testid']
+    });
+
+    // Also observe the widget element itself when it's added
+    const widgetObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          const widget = searchWidgetContainer.querySelector('gen-search-widget');
+          if (widget) {
+            observer.observe(widget, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['class', 'data-testid']
+            });
+          }
+        }
+      });
+    });
+
+    widgetObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => {
+      observer.disconnect();
+      widgetObserver.disconnect();
+    };
+  }, []);
+
 
   return (
     <div className="min-h-screen">
@@ -304,11 +363,15 @@ export default function Home() {
                   />
                 </span>
                 <strong>Gemini AI</strong>
-                <gen-search-widget
-                  configId="6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"
-                  triggerId="mainSearchInput"
-                ></gen-search-widget>
               </p>
+            </div>
+
+            {/* Search Widget Container */}
+            <div className="search-widget-container" id="searchWidgetContainer">
+              <gen-search-widget
+                configId="6bde4c36-4e03-4c72-9ab9-6cbe4366d3a7"
+                triggerId="mainSearchInput"
+              ></gen-search-widget>
             </div>
 
             {/* Hidden input for widget trigger */}

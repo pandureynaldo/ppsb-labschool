@@ -11,18 +11,19 @@ interface DarkModeContextType {
 const DarkModeContext = createContext<DarkModeContextType | undefined>(undefined);
 
 export function DarkModeProvider({ children }: { children: React.ReactNode }) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Default to light mode
   const [mounted, setMounted] = useState(false);
 
   // Load dark mode preference from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('darkMode');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     if (savedTheme !== null) {
+      // Use saved preference if available
       setIsDarkMode(savedTheme === 'true');
     } else {
-      setIsDarkMode(prefersDark);
+      // Always default to light mode (ignoring system preference)
+      setIsDarkMode(false);
     }
     
     setMounted(true);
